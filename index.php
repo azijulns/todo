@@ -1,3 +1,17 @@
+<?php
+include_once 'includes/data.php';
+if (!$connection) {
+	throw new Exception("Cannot connect to the database");
+} else {
+	//query the data
+	$result = mysqli_query($connection, "SELECT * FROM tasks");
+
+	// close mysqli
+	// mysqli_close($connection);
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,8 +26,9 @@
 	<!-- font awesome icons -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
 	<!-- bootstrap -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/css/bootstrap.min.css" />
-	<link rel="stylesheet" href="assets/css/public.css">
+	<link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="assets/css/style.css?v=<?php echo time(); ?>">
+
 </head>
 
 <body>
@@ -30,10 +45,20 @@
 						<p id="tasksInfo" class="fw-bold"></p>
 					</div>
 					<div class="input-group mb-3">
-						<input id="taskInput" type="text" class="form-control" placeholder="Add your task ..." aria-label="Add your task" aria-describedby="button-addon2" />
-						<button class="btn btn-outline-secondary" type="button" id="addTaskBtn">
-							<i class="fa-solid fa-pencil"></i>
-						</button>
+						<?php
+						$added = $_GET["added"] ?? '';
+						if ($added) {
+							echo '<P>Task Successfully Added</P>';
+						} ?>
+						<form method="post" id="add_todo" action="tasks.php
+						">
+							<input id="taskInput" type="text" class="form-control" placeholder="Add your task ..." aria-label="Add your task" name="task" />
+							<input type="datetime" class="form-control" placeholder="Date..." name="date" id="date">
+							<input type="hidden" name="action" value="add">
+							<button class="btn btn-outline-secondary" type="submit" id="addTaskBtn">
+								<i class="fa-solid fa-pencil"></i>
+							</button>
+						</form>
 					</div>
 					<table class="table">
 						<thead>
@@ -45,13 +70,66 @@
 								<th>Delete</th>
 							</tr>
 						</thead>
-						<tbody id="tasksBody"></tbody>
+						<tbody id="tasksBody">
+							<?php
+							if (mysqli_num_rows($result) == 0) {
+								# code...
+							?>
+								<p>No task Found</p>
+								<?php
+							} else {
+								while ($data = mysqli_fetch_assoc($result)) {
+								?>
+
+									<tr>
+										<th class="
+										<?php if ($data["complete"] == 1) {
+											echo "wavy";
+										} ?>"><?php echo $data["id"] ?></th>
+										<th class="
+										<?php if ($data["complete"] == 1) {
+											echo "wavy";
+										} ?>"><?php echo $data["task"] ?></th>
+										<th class="task-date d-flex justify-content-center
+										 <?php
+											if ($data["complete"] == 1) {
+												echo "wavy";
+											} ?>"><?php echo $data["date"] ?></th>
+										<th>
+											<i data-id="<?php echo $data["id"] ?>" class="status-icone fa-regular fa-square-check
+											<?php if ($data["complete"] == 1) {
+												echo "active";
+											} ?>"></i><i class=" fa-solid fa-square-check d-none"></i>
+										</th>
+										<th><i data-id="<?php echo $data["id"] ?>" class="delete-icone fa-solid fa-trash-can"></i></th>
+									</tr>
+
+							<?php
+								}
+							}
+
+							?>
+
+						</tbody>
 					</table>
 				</div>
 			</div>
 		</div>
+		<form method="post" id="status-form" action="tasks.php
+						">
+			<input type="hidden" name="status" id="status">
+			<input type="hidden" name="action" value="status">
+
+		</form>
+		<form method="post" id="delete-form" action="tasks.php
+						">
+			<input type="hidden" name="delete" id="delete">
+			<input type="hidden" name="action" value="delete">
+
+		</form>
 	</div>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+	<script type="text/javascript" src="assets/js/jquery.min.js"></script>
 	<script type="text/javascript" src="assets/js/help.js"></script>
 </body>
 

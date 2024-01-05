@@ -240,6 +240,13 @@ body {
     background-color: var(--main-color) !important;
 }
 
+form#add_todo {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 20px;
+}
+
 /* animation */
 @-webkit-keyframes shake {
     0%,
@@ -330,4 +337,21 @@ body {
     .to-do-list .container .to-do-list-body .to-do-list-header {
         background-position: center -320px !important;
     }
+}
+
+.table tbody i.fa-solid.fa-square-check {
+    color: var(--main-color);
+}
+
+.table tbody i.fa-regular.fa-square-check.active {
+    color: var(--main-color);
+}
+
+.wavy {
+    -webkit-text-decoration: line-through var(--main-color) wavy;
+    text-decoration: line-through var(--main-color) wavy;
+}
+
+.to-do-list-body.position-relative.d-flex.flex-column.bg-white.rounded-5 {
+    overflow: hidden;
 }
