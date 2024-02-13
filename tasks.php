@@ -24,7 +24,7 @@ if (!$connection) {
 				if (!$InsertData) {
 					throw new Exception("Error: " . mysqli_error($connection));
 				} else {
-					header("Location: index.php?added=true?ad={$date}");
+					header("Location: index.php?added=true");
 				}
 			}
 		} elseif ("status" === $action) {
